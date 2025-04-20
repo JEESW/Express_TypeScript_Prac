@@ -2,7 +2,9 @@ import {Post} from '../entities/Post';
 import {
   findAllPosts,
   findUserById,
+  findPostById,
   savePost,
+  deletePostById,
 } from '../repositories/post.repository';
 
 // 전체 게시글 조회
@@ -25,4 +27,32 @@ export const createNewPost = async (
   newPost.author = author;
 
   return await savePost(newPost);
+};
+
+// 게시글 상세 조회
+export const getPostDetail = async (postId: number): Promise<Post | null> => {
+  return await findPostById(postId);
+};
+
+// 게시글 수정
+export const updatePost = async (
+    postId: number,
+    title: string,
+    content: string,
+): Promise<Post | null> => {
+  const post = await findPostById(postId);
+  if (!post) return null;
+
+  post.title = title;
+  post.content = content;
+  return await savePost(post);
+};
+
+// 게시글 삭제
+export const removePost = async (postId: number): Promise<boolean> => {
+  const post = await findPostById(postId);
+  if (!post) return false;
+
+  await deletePostById(postId);
+  return true;
 };
